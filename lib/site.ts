@@ -18,6 +18,7 @@ export const SIBLING_TOOLS = [
   { href: "https://japan-disaster-prep.vercel.app", label: "Japan Disaster Prep Check" },
   { href: "https://japan-lost-item.vercel.app", label: "Japan Lost Item Check" },
   { href: "https://japan-medical-cost-cap.vercel.app", label: "Japan High-Cost Medical Expense Check" },
+  { href: "https://japan-job-loss.vercel.app", label: "Japan Job Loss Check" },
   { href: "https://japan-overseas-dependents.vercel.app", label: "Japan Overseas Dependents Check" },
   { href: "https://japan-parttime-check.vercel.app", label: "Japan Part-time Work Check" },
   { href: "https://japan-driving-check.vercel.app", label: "Japan Driving Check" },
