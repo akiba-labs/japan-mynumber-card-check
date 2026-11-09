@@ -60,6 +60,7 @@ Educational date calculator, not legal advice, not affiliated with the Digital A
 - Japan Lost Item Check: https://japan-lost-item.vercel.app
 - Japan High-Cost Medical Expense Check: https://japan-medical-cost-cap.vercel.app
 - Japan Job Loss Check: https://japan-job-loss.vercel.app
+- Japan Visa Renewal Window Check: https://japan-visa-renewal.vercel.app
 - Japan Overseas Dependents Check: https://japan-overseas-dependents.vercel.app
 - Japan Part-time Work Check: https://japan-parttime-check.vercel.app
 - Japan Driving Check: https://japan-driving-check.vercel.app
