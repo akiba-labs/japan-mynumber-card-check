@@ -4,6 +4,7 @@ import { useState, useSyncExternalStore } from "react";
 import { CardDisclaimer } from "@/components/card-disclaimer";
 import { ShareBar } from "@/components/share-bar";
 import { HOLDERS, HOLDER_LABEL, todayJst, type Holder, type Renewal } from "@/lib/card";
+import { isGithubPages, pagesSiteUrl } from "@/lib/hosting";
 import { EXAMPLE_SHARED, PUBLIC_URL, resultPath, safeCheck, type Shared } from "@/lib/share";
 
 const field = "mt-2 w-full rounded-xl border border-line bg-black/40 px-3 py-2 text-sm text-foreground focus:border-amber";
@@ -61,7 +62,7 @@ export function Calculator({ initial }: { initial?: Shared }) {
   const r = birthDate && cardIssueDate ? safeCheck(shared) : null;
   // An issue date after the check date is rejected by the API ("issue date is in the future"); say so instead of the generic prompt.
   const issueInFuture = !r && !!cardIssueDate && cardIssueDate > (today || todayJst());
-  const shareUrl = `${PUBLIC_URL}${resultPath(shared)}`;
+  const shareUrl = isGithubPages ? `${pagesSiteUrl(PUBLIC_URL)}/` : `${PUBLIC_URL}${resultPath(shared)}`;
 
   return (
     <div className="grid gap-6 lg:grid-cols-[0.9fr_1.3fr]">
@@ -164,7 +165,10 @@ export function Calculator({ initial }: { initial?: Shared }) {
                   </ul>
                 </>
               ) : null}
-              <div className="mt-6">
+              <div className="mt-6" data-testid="share-result">
+                {isGithubPages ? (
+                  <p className="mb-3 text-xs text-muted">Share the checker. A link to this exact result returns when hosting is back.</p>
+                ) : null}
                 <ShareBar url={shareUrl} text={`My Number Card: ${VERDICT_LABEL[r.verdict].toLowerCase()} (expires ${r.card.expiry})`} />
               </div>
             </>
