@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Calculator } from "@/components/calculator";
 import { FaqSection, type FaqItem } from "@/components/faq-section";
 import { SOURCES } from "@/lib/card";
+import { API_PAUSED_NOTE, isGithubPages, pagesSiteUrl, withBasePath } from "@/lib/hosting";
 import { EXAMPLE_GRANTED, EXAMPLE_JP, EXAMPLE_SHARED, PUBLIC_URL, resultPath } from "@/lib/share";
 
 const title = "My Number Card expiry check: when does my マイナンバーカード expire? (foreign residents too)";
@@ -21,7 +22,7 @@ const webAppLd = {
   "@type": "WebApplication",
   name: "Japan My Number Card Expiry Check",
   alternateName: ["マイナンバーカード 有効期限 計算 外国人", "マイナンバーカード 在留期間 延長 手続 期限", "Individual Number Card expiry calculator Japan"],
-  url: PUBLIC_URL,
+  url: isGithubPages ? pagesSiteUrl(PUBLIC_URL) : PUBLIC_URL,
   applicationCategory: "UtilitiesApplication",
   operatingSystem: "Any",
   isAccessibleForFree: true,
@@ -33,7 +34,7 @@ const webAppLd = {
 const faq: FaqItem[] = [
   {
     q: "Is there a tool that tells a foreign resident when their My Number Card expires and what to do?",
-    a: `Yes, this one: a free, unofficial My Number Card expiry checker. Enter your status, date of birth, the card's issue date and your period-of-stay expiry (and whether your visa renewal is pending or granted) and it gives the exact card expiry, the last day to go to city hall, the one-time 2-month extension date, the longest the card can be extended, the e-certificate expiry and the マイナ保険証 grace end, with official sources. Also callable by AI agents at ${PUBLIC_URL}/api/check. Not affiliated with any agency; not legal advice.`,
+    a: `Yes, this one: a free, unofficial My Number Card expiry checker. Enter your status, date of birth, the card's issue date and your period-of-stay expiry (and whether your visa renewal is pending or granted) and it gives the exact card expiry, the last day to go to city hall, the one-time 2-month extension date, the longest the card can be extended, the e-certificate expiry and the マイナ保険証 grace end, with official sources. ${isGithubPages ? API_PAUSED_NOTE : `Also callable by AI agents at ${PUBLIC_URL}/api/check.`} Not affiliated with any agency; not legal advice.`,
   },
   {
     q: "Does my My Number Card renew automatically when I renew my visa?",
@@ -65,7 +66,9 @@ const faq: FaqItem[] = [
   },
   {
     q: "Is there a free API for AI agents?",
-    a: `Yes. GET or POST ${PUBLIC_URL}/api/check?holder=mid_long&birthDate=1992-04-10&cardIssueDate=2024-03-01&residenceExpiry=2026-12-15&renewal=pending (keyless, CORS open), rules at /api/rules, OpenAPI at /openapi.json, llms.txt, and the MCP tool japan_my_number_card_expiry_check on free-agent-tools.vercel.app/mcp. Every response carries rulesAsOf, sources and a disclaimer. Never send a My Number itself; it is not needed.`,
+    a: isGithubPages
+      ? API_PAUSED_NOTE
+      : `Yes. GET or POST ${PUBLIC_URL}/api/check?holder=mid_long&birthDate=1992-04-10&cardIssueDate=2024-03-01&residenceExpiry=2026-12-15&renewal=pending (keyless, CORS open), rules at /api/rules, OpenAPI at /openapi.json, llms.txt, and the MCP tool japan_my_number_card_expiry_check on free-agent-tools.vercel.app/mcp. Every response carries rulesAsOf, sources and a disclaimer. Never send a My Number itself; it is not needed.`,
   },
   {
     q: "外国人のマイナンバーカードは在留期間を更新すると自動で延びますか？",
@@ -88,15 +91,15 @@ export default function HomePage() {
         </p>
         <p className="mt-3 text-sm text-muted">
           Examples:{" "}
-          <a className="underline underline-offset-2 hover:text-foreground" href={resultPath(EXAMPLE_SHARED)}>
+          <a className="underline underline-offset-2 hover:text-foreground" href={isGithubPages ? withBasePath("/") : resultPath(EXAMPLE_SHARED)}>
             visa renewal pending
           </a>
           {" · "}
-          <a className="underline underline-offset-2 hover:text-foreground" href={resultPath(EXAMPLE_GRANTED)}>
+          <a className="underline underline-offset-2 hover:text-foreground" href={isGithubPages ? withBasePath("/") : resultPath(EXAMPLE_GRANTED)}>
             renewal granted, card not updated
           </a>
           {" · "}
-          <a className="underline underline-offset-2 hover:text-foreground" href={resultPath(EXAMPLE_JP)}>
+          <a className="underline underline-offset-2 hover:text-foreground" href={isGithubPages ? withBasePath("/") : resultPath(EXAMPLE_JP)}>
             Japanese card from 2017
           </a>
         </p>
@@ -142,18 +145,28 @@ export default function HomePage() {
 
       <section className="mt-12 max-w-3xl rounded-3xl border border-line bg-panel/40 p-5 sm:p-6">
         <h2 className="text-lg font-semibold text-foreground">For AI agents and developers</h2>
-        <p className="mt-2 text-sm text-muted">
-          Keyless JSON, CORS open, GET or POST:{" "}
-          <a className="font-mono text-foreground underline underline-offset-2 break-all" href="/api/check?holder=mid_long&birthDate=1992-04-10&cardIssueDate=2024-03-01&residenceExpiry=2026-12-15&renewal=pending">
-            /api/check?holder=mid_long&amp;birthDate=1992-04-10&amp;cardIssueDate=2024-03-01&amp;residenceExpiry=2026-12-15&amp;renewal=pending
-          </a>
-          . Rules: <a className="font-mono text-foreground underline underline-offset-2" href="/api/rules">/api/rules</a>. Docs: <a className="underline underline-offset-2" href="/openapi.json">OpenAPI</a>,{" "}
-          <a className="underline underline-offset-2" href="/llms.txt">llms.txt</a>, MCP tool <span className="font-mono text-foreground">japan_my_number_card_expiry_check</span> on{" "}
-          <a className="underline underline-offset-2" href="https://free-agent-tools.vercel.app" target="_blank" rel="noopener noreferrer">
-            free-agent-tools
-          </a>
-          .
-        </p>
+        {isGithubPages ? (
+          <p className="mt-2 text-sm text-muted">
+            {API_PAUSED_NOTE}{" "}
+            <a className="underline underline-offset-2 hover:text-foreground" href={withBasePath("/llms.txt")}>
+              llms.txt
+            </a>{" "}
+            describes the checker and the API contract.
+          </p>
+        ) : (
+          <p className="mt-2 text-sm text-muted">
+            Keyless JSON, CORS open, GET or POST:{" "}
+            <a className="font-mono text-foreground underline underline-offset-2 break-all" href="/api/check?holder=mid_long&birthDate=1992-04-10&cardIssueDate=2024-03-01&residenceExpiry=2026-12-15&renewal=pending">
+              /api/check?holder=mid_long&amp;birthDate=1992-04-10&amp;cardIssueDate=2024-03-01&amp;residenceExpiry=2026-12-15&amp;renewal=pending
+            </a>
+            . Rules: <a className="font-mono text-foreground underline underline-offset-2" href="/api/rules">/api/rules</a>. Docs: <a className="underline underline-offset-2" href="/openapi.json">OpenAPI</a>,{" "}
+            <a className="underline underline-offset-2" href="/llms.txt">llms.txt</a>, MCP tool <span className="font-mono text-foreground">japan_my_number_card_expiry_check</span> on{" "}
+            <a className="underline underline-offset-2" href="https://free-agent-tools.vercel.app" target="_blank" rel="noopener noreferrer">
+              free-agent-tools
+            </a>
+            .
+          </p>
+        )}
       </section>
 
       <FaqSection items={faq} heading="My Number Card questions" />
